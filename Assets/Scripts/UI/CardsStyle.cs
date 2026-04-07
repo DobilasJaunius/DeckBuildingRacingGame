@@ -1,6 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 public class CardsStyle : MonoBehaviour
@@ -13,16 +16,59 @@ public class CardsStyle : MonoBehaviour
     [SerializeField] float yOffset = .05f;
     [SerializeField] float headerScale = .1f;
 
+    [Header("Input Settings")]
+    [SerializeField] InputAction scrollCards;
+
+    [Header("Card settings")]
+    private int selectedIndex = 0;
+    private bool firstSelection = true;
+
+    private List<VisualElement> cards;
+    private VisualElement currentSelected = null;
+    private float currentSelectedAngle;
+
     void Start()
     {
         var container = uiDocument.rootVisualElement.Q("CardContainer");
 
         container.RegisterCallback<GeometryChangedEvent>(e => ArrangeCards(container));
+        scrollCards.Enable();
+    }
+
+    private void Update() {
+
+        if(scrollCards.WasPerformedThisFrame())
+        {
+            int direction = (int)scrollCards.ReadValue<float>();
+            if (firstSelection)
+            {
+                selectedIndex -= direction;
+                firstSelection = false;
+            }
+
+            if(direction == 1 && selectedIndex >= cards.Count-1) return;
+            if(direction == -1 && selectedIndex <= 0) return;
+
+            selectedIndex += direction;
+
+            if(currentSelected != null)
+            {
+                OnCardHover(currentSelected, currentSelectedAngle, false);
+            }
+
+            float t = cards.Count == 1 ? 0 : (selectedIndex / (float)(cards.Count - 1)) * 2 - 1;
+            float angleDeg = t * (spreadAngle / 2f);
+
+            OnCardHover(cards[selectedIndex], angleDeg, true);
+
+            currentSelected = cards[selectedIndex];
+            currentSelectedAngle = angleDeg;
+        }
     }
 
     void ArrangeCards(VisualElement container)
     {
-        var cards = container.Children().ToList();
+        cards = container.Children().ToList();
         int count = cards.Count;
 
         float panelHeight = container.resolvedStyle.height;
@@ -48,10 +94,6 @@ public class CardsStyle : MonoBehaviour
 
             card.style.rotate = new Rotate(angleDeg);
             card.style.transformOrigin = new TransformOrigin(Length.Percent(50), Length.Percent(50));
-
-            //Subscribe to on hover and on leave events
-            card.RegisterCallback<MouseEnterEvent>(e => OnCardHover(card, angleDeg, true));
-            card.RegisterCallback<MouseLeaveEvent>(e => OnCardHover(card, angleDeg, false));
 
             //Change header size to 10% of the card
             card.RegisterCallback<GeometryChangedEvent>(e =>

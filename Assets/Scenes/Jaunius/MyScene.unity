@@ -329,6 +329,39 @@ MonoBehaviour:
   spreadAngle: 50
   yOffset: 0.25
   headerScale: 0.1
+  scrollCards:
+    m_Name: Scroll Cards
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 2b947c87-e858-4f7f-ae0f-984b4b8fabd5
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: ScrollDirection
+      m_Id: 634cee60-48bd-4866-b3cf-c75a2ea8b3bb
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Scroll Cards
+      m_Flags: 4
+    - m_Name: negative
+      m_Id: f35a4fa7-bd9d-499f-bb9e-975a2e698c82
+      m_Path: <Keyboard>/a
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Scroll Cards
+      m_Flags: 8
+    - m_Name: positive
+      m_Id: 471ae48d-9898-4f16-b064-a4b7d1c6c82a
+      m_Path: <Keyboard>/d
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Scroll Cards
+      m_Flags: 8
+    m_Flags: 0
 --- !u!1 &1765757486
 GameObject:
   m_ObjectHideFlags: 0
