@@ -1,0 +1,8 @@
+.card-base {
+    height: 35%;
+    transition-property: height, translate;
+    transition-duration: 0.15s, 0.15s;
+    margin-top: auto;
+    margin-bottom: auto;
+    transition-timing-function: ease, ease-in-out-back;
+}
