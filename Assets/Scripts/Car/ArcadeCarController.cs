@@ -61,7 +61,7 @@ public class ArcadeCarController : MonoBehaviour
 
         float force = (offset * springStrength) - (_vel * springDamper);
 
-        rb.AddForceAtPosition(force * _dir * Time.deltaTime, wheel.position);
+        rb.AddForceAtPosition(force * _dir * Time.fixedDeltaTime, wheel.position);
     }
 
     void CalculateTyreGrip(Transform wheel)
