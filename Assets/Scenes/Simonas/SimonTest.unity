@@ -532,8 +532,8 @@ Transform:
   m_GameObject: {fileID: 848896520}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.47173, y: -0, z: -3.048}
-  m_LocalScale: {x: 43.445778, y: 1, z: 48.50081}
+  m_LocalPosition: {x: -0.47173, y: 0.0000005905316, z: -3.048}
+  m_LocalScale: {x: 43.445778, y: 1, z: 238.08078}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -564,16 +564,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 911069188}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.21632694, z: -0, w: 0.97632104}
-  m_LocalPosition: {x: -11.62658, y: 3.8, z: -2.3881626}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11.640285, y: 3.8, z: -2.3936014}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 714444234}
   - {fileID: 511512871}
-  - {fileID: 2147099236}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -24.987, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &911069191
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -627,7 +626,13 @@ MonoBehaviour:
   springDamper: 10
   suspensionLength: 0.505
   gripValue: 0.5
-  tyreMass: 1
+  tyreMass: 0.5
+  steerSmooth: 0.2
+  maxSteerAngle: 1
+  maxSpeed: 0
+  maxReverseSpeed: 0
+  acceleration: 10
+  brakeTorque: 0
 --- !u!1 &1164333209
 GameObject:
   m_ObjectHideFlags: 0
@@ -934,7 +939,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputManager
   steerInput: {fileID: 9146632998104554888, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  accelInput: {fileID: 2702572042821477084, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   steerValue: 0
+  accelValue: 0
 --- !u!114 &2147099235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -974,11 +981,11 @@ Transform:
   m_GameObject: {fileID: 2147099233}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.21632694, z: -0, w: 0.97632104}
-  m_LocalPosition: {x: 17.309626, y: -3.3, z: 11.669363}
+  m_LocalPosition: {x: 5.669341, y: 0.5, z: 9.275762}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 911069189}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -988,3 +995,4 @@ SceneRoots:
   - {fileID: 587771376}
   - {fileID: 848896524}
   - {fileID: 911069189}
+  - {fileID: 2147099236}

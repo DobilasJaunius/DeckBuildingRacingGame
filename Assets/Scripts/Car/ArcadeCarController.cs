@@ -5,10 +5,13 @@ using SF = UnityEngine.SerializeField;
 
 public class ArcadeCarController : MonoBehaviour
 {
+    [Header("Refferences")]
     [SF] private Rigidbody rb;
     [SF] private List<Transform> wheels;
     [SF] private LayerMask ground;
     [SF] private PlayerInputManager inputManager;
+
+    private float wheelRotation;
 
     [Header("Suspension")]
     [SF] private float springStrength;
@@ -19,6 +22,16 @@ public class ArcadeCarController : MonoBehaviour
     [SF] private float gripValue;
     [SF] private float tyreMass;
 
+    [Header("Steering values")]
+    [SF] private float steerSmooth;
+    [SF] private float maxSteerAngle;
+
+    [Header("Acceleration values")]
+    [SF] private float maxSpeed;
+    [SF] private float maxReverseSpeed;
+    [SF] private float acceleration;
+    [SF] private float brakeTorque;
+
     void Start()
     {
         
@@ -27,7 +40,7 @@ public class ArcadeCarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        CarInput();
     }
 
     void FixedUpdate() {
@@ -44,6 +57,7 @@ public class ArcadeCarController : MonoBehaviour
             {
                 CalculateSuspension(wheel, _hit);
                 CalculateTyreGrip(wheel);
+                Acceleration(wheel);
             }
         }
     }
@@ -76,19 +90,58 @@ public class ArcadeCarController : MonoBehaviour
 
         float acceleration = velChange / Time.fixedDeltaTime;
 
-        rb.AddForceAtPosition(_dir * tyreMass * acceleration, wheel.position);
+        rb.AddForceAtPosition(_dir * tyreMass * acceleration * Time.fixedDeltaTime, wheel.position);
     }
 
     void Steering()
     {
         foreach(Transform wheel in wheels)
         {
+            
+
             if(wheel.tag == "frontWheel")
             {
-                wheel.Rotate(Vector3.up, 45 * inputManager.steerValue);
-                Mathf.Clamp(wheel.eulerAngles.y, -45, 45);
-                Debug.Log(wheel.eulerAngles.y);
+                wheel.transform.rotation = Quaternion.Euler(wheel.transform.rotation.x, wheelRotation, wheel.transform.rotation.z);
             }
+        }
+    }
+
+    void Acceleration(Transform wheel)
+    {
+        if(wheel.tag == "frontWheel")
+        {
+            Vector3 _dir = wheel.forward;
+            float _speed = Vector3.Dot(transform.forward, rb.linearVelocity);
+
+            if(inputManager.accelValue > 0f)
+            {
+
+
+                //float normalizeSpeed = Mathf.Clamp01(Mathf.Abs(_speed) / maxSpeed);
+
+                rb.AddForceAtPosition(inputManager.accelValue * acceleration * _dir * Time.fixedDeltaTime, wheel.position);
+            }
+
+            else if(inputManager.accelValue < 0f)
+            {
+                float velChange = -_speed * gripValue;
+
+                float brakeForce = velChange / Time.fixedDeltaTime;
+
+                rb.AddForceAtPosition(inputManager.accelValue * brakeForce * _dir * Time.fixedDeltaTime, wheel.position);
+            }
+        }
+    }
+
+    void CarInput()
+    {
+        if(inputManager.steerValue != 0f)
+        {
+            wheelRotation = Mathf.Lerp(wheelRotation, maxSteerAngle, steerSmooth * Time.deltaTime);
+        }
+        else
+        {
+            wheelRotation = Mathf.Lerp(wheelRotation, 0, steerSmooth * Time.deltaTime);    
         }
     }
 
