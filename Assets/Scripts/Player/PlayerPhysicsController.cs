@@ -1,17 +1,20 @@
 using UnityEngine;
+using UnityEngine.ProBuilder;
 using SF = UnityEngine.SerializeField;
 
 public class PlayerPhysicsController : MonoBehaviour
 {
     [SF] private Rigidbody rb;
-    [SF] Transform movePos;
 
     [SF] private float forceMulti = 30;
     [SF] private float dampStrength = 4f;
-    [SF] private float moveSpeed = 4f;
+    [SF] private float moveSpeed = 18f;
+    [SF] private float maxMoveSpeed = 20f;
 
     private float tripTime = 0f;
     private bool tripped = false;
+
+    private bool canMove = true;
 
     void Update()
     {
@@ -24,10 +27,12 @@ public class PlayerPhysicsController : MonoBehaviour
         {
             tripTime -= Time.deltaTime;
             tripped = true;
+            canMove = false;
         }
         else
         {
             tripped = false;
+            canMove = true;
         }
     }
 
@@ -40,7 +45,7 @@ public class PlayerPhysicsController : MonoBehaviour
 
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-        if(input.magnitude != 0)
+        if(input.magnitude != 0 && canMove)
         {
             PhysMove(input);
         }
@@ -62,8 +67,17 @@ public class PlayerPhysicsController : MonoBehaviour
         Vector2 nInput = input.normalized;
         Debug.Log(input);
 
-        Vector3 moveDir = movePos.forward * nInput.y + movePos.right * nInput.x;
+        Vector3 moveDir = Vector3.forward * nInput.y + Vector3.right * nInput.x;
+        moveDir.y = 0;
+        moveDir.Normalize();
 
-        rb.AddForceAtPosition(moveDir * moveSpeed, movePos.position, ForceMode.Force);
+        rb.AddForce(moveDir * moveSpeed, ForceMode.Force);
+
+        Vector3 flat = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        if(flat.magnitude > maxMoveSpeed)
+        {
+            flat = Vector3.ClampMagnitude(flat, maxMoveSpeed);
+            rb.linearVelocity = new Vector3(flat.x, rb.linearVelocity.y, flat.z);
+        }
     }
 }
